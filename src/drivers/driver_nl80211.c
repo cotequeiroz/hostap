@@ -10941,6 +10941,7 @@ static int wpa_driver_nl80211_status(void *priv, char *buf, size_t buflen)
 				  "capa.enc=0x%x\n"
 				  "capa.auth=0x%x\n"
 				  "capa.flags=0x%llx\n"
+				  "capa.flags2=0x%llx\n"
 				  "capa.rrm_flags=0x%x\n"
 				  "capa.max_scan_ssids=%d\n"
 				  "capa.max_sched_scan_ssids=%d\n"
@@ -10965,6 +10966,7 @@ static int wpa_driver_nl80211_status(void *priv, char *buf, size_t buflen)
 				  drv->capa.enc,
 				  drv->capa.auth,
 				  (unsigned long long) drv->capa.flags,
+				  (unsigned long long) drv->capa.flags2,
 				  drv->capa.rrm_flags,
 				  drv->capa.max_scan_ssids,
 				  drv->capa.max_sched_scan_ssids,
