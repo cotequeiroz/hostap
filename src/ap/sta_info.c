@@ -1414,9 +1414,6 @@ bool ap_sta_set_authorized_flag(struct hostapd_data *hapd, struct sta_info *sta,
 				mld_assoc_link_id = -2;
 		}
 #endif /* CONFIG_IEEE80211BE */
-		if (mld_assoc_link_id != -2)
-			hostapd_prune_associations(hapd, sta->addr,
-						   mld_assoc_link_id);
 		sta->flags |= WLAN_STA_AUTHORIZED;
 	} else {
 		sta->flags &= ~WLAN_STA_AUTHORIZED;
