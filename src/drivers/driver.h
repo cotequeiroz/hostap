@@ -6555,6 +6555,7 @@ union wpa_event_data {
 	/**
 	 * struct dfs_event - Data for radar detected events
 	 * @freq: Frequency of the channel in MHz
+	 * @link_id: If >= 0, Link ID of the MLO link
 	 */
 	struct dfs_event {
 		int freq;
@@ -6563,6 +6564,7 @@ union wpa_event_data {
 		enum chan_width chan_width;
 		int cf1;
 		int cf2;
+		int link_id;
 	} dfs_event;
 
 	/**
