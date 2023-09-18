@@ -5226,6 +5226,9 @@ static int wpa_driver_nl80211_set_ap(void *priv,
 		nla_nest_end(msg, ftm);
 	}
 
+	if (params->freq && nl80211_put_freq_params(msg, params->freq) < 0)
+		goto fail;
+
 #ifdef CONFIG_IEEE80211AX
 	if (params->he_spr_ctrl) {
 		struct nlattr *spr;
@@ -5259,9 +5262,6 @@ static int wpa_driver_nl80211_set_ap(void *priv,
 
 		nla_nest_end(msg, spr);
 	}
-
-	if (params->freq && nl80211_put_freq_params(msg, params->freq) < 0)
-		goto fail;
 
 	if (params->freq && params->freq->he_enabled) {
 		struct nlattr *bss_color;
