@@ -5421,7 +5421,7 @@ static void handle_assoc(struct hostapd_data *hapd,
 		sta->nonerp_set = 1;
 		hapd->iface->num_sta_non_erp++;
 		if (hapd->iface->num_sta_non_erp == 1)
-			ieee802_11_set_beacons(hapd->iface);
+			ieee802_11_update_beacons(hapd->iface);
 	}
 
 	if (!(sta->capability & WLAN_CAPABILITY_SHORT_SLOT_TIME) &&
@@ -5432,7 +5432,7 @@ static void handle_assoc(struct hostapd_data *hapd,
 		    hapd->iface->current_mode->mode ==
 		    HOSTAPD_MODE_IEEE80211G &&
 		    hapd->iface->num_sta_no_short_slot_time == 1)
-			ieee802_11_set_beacons(hapd->iface);
+			ieee802_11_update_beacons(hapd->iface);
 	}
 
 	if (sta->capability & WLAN_CAPABILITY_SHORT_PREAMBLE)
@@ -5447,7 +5447,7 @@ static void handle_assoc(struct hostapd_data *hapd,
 		if (hapd->iface->current_mode &&
 		    hapd->iface->current_mode->mode == HOSTAPD_MODE_IEEE80211G
 		    && hapd->iface->num_sta_no_short_preamble == 1)
-			ieee802_11_set_beacons(hapd->iface);
+			ieee802_11_update_beacons(hapd->iface);
 	}
 
 	update_ht_state(hapd, sta);
