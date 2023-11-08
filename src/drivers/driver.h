@@ -335,6 +335,8 @@ struct hostapd_hw_modes {
  * @flags: information flags about the BSS/IBSS (WPA_SCAN_*)
  * @bssid: BSSID
  * @freq: frequency of the channel in MHz (e.g., 2412 = channel 1)
+ * @max_cw: the max channel width of the connection (calculated during scan
+ * result processing)
  * @beacon_int: beacon interval in TUs (host byte order)
  * @caps: capability information field in host byte order
  * @qual: signal quality
@@ -371,6 +373,7 @@ struct wpa_scan_res {
 	unsigned int flags;
 	u8 bssid[ETH_ALEN];
 	int freq;
+	enum chan_width max_cw;
 	u16 beacon_int;
 	u16 caps;
 	int qual;
