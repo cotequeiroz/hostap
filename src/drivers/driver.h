@@ -1826,6 +1826,11 @@ struct wpa_driver_ap_params {
 	 * psk_len - PSK length in bytes (0 = not set)
 	 */
 	size_t psk_len;
+
+	/**
+	 * sae_password - SAE password for SAE offload
+	 */
+	const char *sae_password;
 };
 
 struct wpa_driver_mesh_bss_params {
@@ -2305,6 +2310,8 @@ struct wpa_driver_capa {
 #define WPA_DRIVER_FLAGS2_OWE_OFFLOAD_STA	0x0000000000040000ULL
 /** Driver supports OWE AP offload */
 #define WPA_DRIVER_FLAGS2_OWE_OFFLOAD_AP	0x0000000000080000ULL
+/** Driver support AP SAE authentication offload */
+#define WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP	0x0000000000100000ULL
 	u64 flags2;
 
 #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
