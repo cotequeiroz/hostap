@@ -665,6 +665,13 @@ struct active_scs_elem {
 };
 
 
+struct ml_sta_link_info {
+	u8 link_id;
+	u8 bssid[ETH_ALEN];
+	u16 status;
+};
+
+
 /**
  * struct wpa_supplicant - Internal data for wpa_supplicant interface
  *
@@ -729,7 +736,7 @@ struct wpa_supplicant {
 	u8 ap_mld_addr[ETH_ALEN];
 	u8 mlo_assoc_link_id;
 	u16 valid_links; /* bitmap of valid MLO link IDs */
-	struct ml_sta_link_info {
+	struct {
 		u8 addr[ETH_ALEN];
 		u8 bssid[ETH_ALEN];
 		unsigned int freq;
@@ -1694,7 +1701,8 @@ void wpa_supplicant_rx_eapol(void *ctx, const u8 *own_addr,
 			     enum frame_encryption encrypted);
 void wpa_supplicant_update_config(struct wpa_supplicant *wpa_s);
 void wpa_supplicant_clear_status(struct wpa_supplicant *wpa_s);
-void wpas_connection_failed(struct wpa_supplicant *wpa_s, const u8 *bssid);
+void wpas_connection_failed(struct wpa_supplicant *wpa_s, const u8 *bssid,
+			    const u8 **link_bssids);
 void fils_connection_failure(struct wpa_supplicant *wpa_s);
 void fils_pmksa_cache_flush(struct wpa_supplicant *wpa_s);
 int wpas_driver_bss_selection(struct wpa_supplicant *wpa_s);
