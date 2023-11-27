@@ -6093,9 +6093,11 @@ static int handle_action(struct hostapd_data *hapd,
 				return 1;
 		}
 		break;
+#ifndef CONFIG_NO_RRM
 	case WLAN_ACTION_RADIO_MEASUREMENT:
 		hostapd_handle_radio_measurement(hapd, (const u8 *) mgmt, len);
 		return 1;
+#endif /* CONFIG_NO_RRM */
 	}
 
 	hostapd_logger(hapd, mgmt->sa, HOSTAPD_MODULE_IEEE80211,
@@ -6700,7 +6702,9 @@ static void handle_action_cb(struct hostapd_data *hapd,
 			     size_t len, int ok)
 {
 	struct sta_info *sta;
+#ifndef CONFIG_NO_RRM
 	const struct rrm_measurement_report_element *report;
+#endif /* CONFIG_NO_RRM */
 
 #ifdef CONFIG_DPP
 	if (len >= IEEE80211_HDRLEN + 6 &&
@@ -6754,6 +6758,7 @@ static void handle_action_cb(struct hostapd_data *hapd,
 	}
 #endif /* CONFIG_HS20 */
 
+#ifndef CONFIG_NO_RRM
 	if (len < 24 + 5 + sizeof(*report))
 		return;
 	report = (const struct rrm_measurement_report_element *)
@@ -6764,6 +6769,7 @@ static void handle_action_cb(struct hostapd_data *hapd,
 	    report->len >= 3 &&
 	    report->type == MEASURE_TYPE_BEACON)
 		hostapd_rrm_beacon_req_tx_status(hapd, mgmt, len, ok);
+#endif /* CONFIG_NO_RRM */
 }
 
 
