@@ -4341,6 +4341,7 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
 
 	wpas_wps_notify_assoc(wpa_s, bssid);
 
+#ifndef CONFIG_NO_WMM_AC
 	if (data) {
 		wmm_ac_notify_assoc(wpa_s, data->assoc_info.resp_ies,
 				    data->assoc_info.resp_ies_len,
@@ -4349,6 +4350,7 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
 		if (wpa_s->reassoc_same_bss)
 			wmm_ac_restore_tspecs(wpa_s);
 	}
+#endif /* CONFIG_NO_WMM_AC */
 
 #if defined(CONFIG_FILS) || defined(CONFIG_MBO)
 	bss = wpa_bss_get_bssid(wpa_s, bssid);
@@ -5221,10 +5223,12 @@ static void wpas_event_rx_mgmt_action(struct wpa_supplicant *wpa_s,
 		" Category=%u DataLen=%d freq=%d MHz",
 		MAC2STR(mgmt->sa), category, (int) plen, freq);
 
+#ifndef CONFIG_NO_WMM_AC
 	if (category == WLAN_ACTION_WMM) {
 		wmm_ac_rx_action(wpa_s, mgmt->da, mgmt->sa, payload, plen);
 		return;
 	}
+#endif /* CONFIG_NO_WMM_AC */
 
 #ifdef CONFIG_IEEE80211R
 	if (category == WLAN_ACTION_FT) {

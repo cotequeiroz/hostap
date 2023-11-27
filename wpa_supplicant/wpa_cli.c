@@ -2856,6 +2856,8 @@ static int wpa_cli_cmd_tdls_link_status(struct wpa_ctrl *ctrl, int argc,
 }
 
 
+#ifndef CONFIG_NO_WMM_AC
+
 static int wpa_cli_cmd_wmm_ac_addts(struct wpa_ctrl *ctrl, int argc,
 				    char *argv[])
 {
@@ -2875,6 +2877,8 @@ static int wpa_cli_cmd_wmm_ac_status(struct wpa_ctrl *ctrl, int argc,
 {
 	return wpa_ctrl_command(ctrl, "WMM_AC_STATUS");
 }
+
+#endif /* CONFIG_NO_WMM_AC */
 
 
 static int wpa_cli_cmd_tdls_chan_switch(struct wpa_ctrl *ctrl, int argc,
@@ -3898,6 +3902,7 @@ static const struct wpa_cli_cmd wpa_cli_commands[] = {
 	{ "tdls_link_status", wpa_cli_cmd_tdls_link_status, NULL,
 	  cli_cmd_flag_none,
 	  "<addr> = TDLS link status with <addr>" },
+#ifndef CONFIG_NO_WMM_AC
 	{ "wmm_ac_addts", wpa_cli_cmd_wmm_ac_addts, NULL,
 	  cli_cmd_flag_none,
 	  "<uplink/downlink/bidi> <tsid=0..7> <up=0..7> [nominal_msdu_size=#] "
@@ -3909,6 +3914,7 @@ static const struct wpa_cli_cmd wpa_cli_commands[] = {
 	{ "wmm_ac_status", wpa_cli_cmd_wmm_ac_status, NULL,
 	  cli_cmd_flag_none,
 	  "= show status for Wireless Multi-Media Admission-Control" },
+#endif /* CONFIG_NO_WMM_AC */
 	{ "tdls_chan_switch", wpa_cli_cmd_tdls_chan_switch, NULL,
 	  cli_cmd_flag_none,
 	  "<addr> <oper class> <freq> [sec_channel_offset=] [center_freq1=] "
