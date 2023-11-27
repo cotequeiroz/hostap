@@ -3540,10 +3540,12 @@ no_pfs:
 			     data->assoc_info.resp_ies_len);
 #endif /* CONFIG_IEEE80211R */
 
+#ifndef CONFIG_NO_ROBUST_AV
 	if (bssid_known)
 		wpas_handle_assoc_resp_mscs(wpa_s, bssid,
 					    data->assoc_info.resp_ies,
 					    data->assoc_info.resp_ies_len);
+#endif /* CONFIG_NO_ROBUST_AV */
 
 	/* WPA/RSN IE from Beacon/ProbeResp */
 	p = data->assoc_info.beacon_ies;
@@ -3598,8 +3600,10 @@ no_pfs:
 
 	wpa_s->assoc_freq = data->assoc_info.freq;
 
+#ifndef CONFIG_NO_ROBUST_AV
 	wpas_handle_assoc_resp_qos_mgmt(wpa_s, data->assoc_info.resp_ies,
 					data->assoc_info.resp_ies_len);
+#endif /* CONFIG_NO_ROBUST_AV */
 
 	return 0;
 }
@@ -5336,6 +5340,7 @@ static void wpas_event_rx_mgmt_action(struct wpa_supplicant *wpa_s,
 	}
 #endif /* CONFIG_DPP */
 
+#ifndef CONFIG_NO_ROBUST_AV
 	if (category == WLAN_ACTION_ROBUST_AV_STREAMING &&
 	    payload[0] == ROBUST_AV_SCS_RESP) {
 		wpas_handle_robust_av_scs_recv_action(wpa_s, mgmt->sa,
@@ -5356,6 +5361,7 @@ static void wpas_event_rx_mgmt_action(struct wpa_supplicant *wpa_s,
 						 payload + 4, plen - 4);
 		return;
 	}
+#endif /* CONFIG_NO_ROBUST_AV */
 
 	wpas_p2p_rx_action(wpa_s, mgmt->da, mgmt->sa, mgmt->bssid,
 			   category, payload, plen, freq);
