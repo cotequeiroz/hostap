@@ -1862,6 +1862,8 @@ int ap_ctrl_iface_chanswitch(struct wpa_supplicant *wpa_s, const char *pos)
 	    !(wpa_s->ifmsh && wpa_s->ifmsh->bss[0]))
 		return -1;
 
+	settings.link_id = -1;
+
 	ret = __ap_ctrl_iface_chanswitch(wpa_s->ap_iface, &settings);
 	if (ret)
 		return ret;
