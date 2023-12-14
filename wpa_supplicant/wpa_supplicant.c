@@ -3084,7 +3084,7 @@ void ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 	struct hostapd_hw_modes *mode = NULL;
 	int i, obss_scan = !(ssid->noscan);
 	u8 channel;
-	bool is_6ghz;
+	bool is_6ghz, is_24ghz;
 	bool dfs_enabled = wpa_s->conf->country[0] && (wpa_s->drv_flags & WPA_DRIVER_FLAGS_RADAR);
 
 	freq->freq = ssid->frequency;
@@ -3118,6 +3118,9 @@ void ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 	if (!mode)
 		return;
 
+	is_24ghz = hw_mode == HOSTAPD_MODE_IEEE80211G ||
+		hw_mode == HOSTAPD_MODE_IEEE80211B;
+
 	is_6ghz = is_6ghz_freq(freq->freq);
 
 	freq->ht_enabled = 0;
@@ -3129,7 +3132,7 @@ void ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 		freq->ht_enabled = ibss_mesh_can_use_ht(wpa_s, ssid, mode);
 	if (freq->ht_enabled)
 		freq->vht_enabled = ibss_mesh_can_use_vht(wpa_s, ssid, mode);
-	if (freq->vht_enabled || is_6ghz)
+	if (freq->vht_enabled || (freq->ht_enabled && is_24ghz) || is_6ghz)
 		freq->he_enabled = ibss_mesh_can_use_he(wpa_s, ssid, mode,
 							ieee80211_mode);
 	freq->channel = channel;
