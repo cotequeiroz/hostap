@@ -515,6 +515,11 @@ def test_dpp_qr_code_auth_mutual2(dev, apdev):
     if ev is None:
         raise Exception("QR Code scan for mutual authentication not requested")
 
+    ev = dev[0].wait_event(["DPP-TX-STATUS"], timeout=1)
+    if ev is None:
+        raise Exception("No TX status reported for response")
+    time.sleep(0.1)
+
     logger.info("dev0 scans QR Code")
     id0b = dev[0].dpp_qr_code(uri1b)
 
@@ -568,6 +573,11 @@ def run_dpp_qr_code_auth_mutual(dev, apdev, curve):
     ev = dev[0].wait_event(["DPP-SCAN-PEER-QR-CODE"], timeout=5)
     if ev is None:
         raise Exception("QR Code scan for mutual authentication not requested")
+
+    ev = dev[0].wait_event(["DPP-TX-STATUS"], timeout=1)
+    if ev is None:
+        raise Exception("No TX status reported for response")
+    time.sleep(0.1)
 
     logger.info("dev0 scans QR Code")
     dev[0].dpp_qr_code(uri)
@@ -691,6 +701,11 @@ def test_dpp_qr_code_auth_hostapd_mutual2(dev, apdev):
     ev = hapd.wait_event(["DPP-SCAN-PEER-QR-CODE"], timeout=5)
     if ev is None:
         raise Exception("QR Code scan for mutual authentication not requested")
+
+    ev = hapd.wait_event(["DPP-TX-STATUS"], timeout=1)
+    if ev is None:
+        raise Exception("No TX status reported for response")
+    time.sleep(0.1)
 
     logger.info("AP scans QR Code")
     hapd.dpp_qr_code(uri0)
@@ -6152,6 +6167,8 @@ def run_dpp_tcp(dev0, dev1, cap_lo, port=None, mutual=False):
         ev = dev1.wait_event(["DPP-SCAN-PEER-QR-CODE"], timeout=5)
         if ev is None:
             raise Exception("QR Code scan for mutual authentication not requested")
+
+        time.sleep(0.1)
 
         id1 = dev1.dpp_qr_code(uri0)
 
