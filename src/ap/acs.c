@@ -792,11 +792,10 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 		secondary_channel = iface->conf->secondary_channel;
 
 	for (i = 0; i < mode->num_channels; i++) {
-		double total_weight;
+		double total_weight = 0;
 		struct acs_bias *bias, tmp_bias;
-		bool update_best = true;
 
-		best = chan = &mode->channels[i];
+		chan = &mode->channels[i];
 
 		/* Since in the current ACS implementation the first channel is
 		 * always a primary channel, skip channels not available as
@@ -882,9 +881,12 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 		}
 
 		factor = 0;
-		if (acs_usable_chan(chan))
+		best = NULL;
+		if (acs_usable_chan(chan)) {
 			factor = chan->interference_factor;
-		total_weight = 1;
+			total_weight = 1;
+			best = chan;
+		}
 
 		for (j = 1; j < n_chans; j++) {
 			adj_chan = acs_find_chan(iface, chan->freq +
@@ -899,16 +901,14 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 				break;
 			}
 
-			if (acs_usable_chan(adj_chan)) {
-				factor += adj_chan->interference_factor;
-				total_weight += 1;
-			} else {
-				update_best = false;
-			}
+			if (!acs_usable_chan(adj_chan))
+				continue;
+
+			factor += adj_chan->interference_factor;
+			total_weight += 1;
 
 			/* find the best channel in this segment */
-			if (update_best &&
-			    adj_chan->interference_factor <
+			if (!best || adj_chan->interference_factor <
 			    best->interference_factor)
 				best = adj_chan;
 		}
@@ -970,6 +970,9 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 				}
 			}
 		}
+
+		if (total_weight == 0)
+			continue;
 
 		factor /= total_weight;
 
