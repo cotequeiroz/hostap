@@ -786,6 +786,10 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 	long double factor;
 	int i, j;
 	unsigned int k;
+	int secondary_channel = 1, freq_offset;
+
+	if (is_24ghz_mode(mode->mode))
+		secondary_channel = iface->conf->secondary_channel;
 
 	for (i = 0; i < mode->num_channels; i++) {
 		double total_weight;
@@ -824,7 +828,7 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 		    iface->conf->country[2] == 0x4f)
 			continue;
 
-		if (!chan_bw_allowed(chan, bw, 1, 1)) {
+		if (!chan_bw_allowed(chan, bw, secondary_channel != -1, 1)) {
 			wpa_printf(MSG_DEBUG,
 				   "ACS: Channel %d: BW %u is not supported",
 				   chan->chan, bw);
@@ -883,7 +887,8 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 		total_weight = 1;
 
 		for (j = 1; j < n_chans; j++) {
-			adj_chan = acs_find_chan(iface, chan->freq + (j * 20));
+			adj_chan = acs_find_chan(iface, chan->freq +
+						 j * secondary_channel * 20);
 			if (!adj_chan)
 				break;
 
@@ -931,8 +936,9 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 		 * channel interference factor. */
 		if (is_24ghz_mode(mode->mode)) {
 			for (j = 0; j < n_chans; j++) {
+				freq_offset = j * 20 * secondary_channel;
 				adj_chan = acs_find_chan(iface, chan->freq +
-							 (j * 20) - 5);
+							 freq_offset - 5);
 				if (adj_chan && acs_usable_chan(adj_chan)) {
 					factor += ACS_ADJ_WEIGHT *
 						adj_chan->interference_factor;
@@ -940,7 +946,7 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 				}
 
 				adj_chan = acs_find_chan(iface, chan->freq +
-							 (j * 20) - 10);
+							 freq_offset - 10);
 				if (adj_chan && acs_usable_chan(adj_chan)) {
 					factor += ACS_NEXT_ADJ_WEIGHT *
 						adj_chan->interference_factor;
@@ -948,7 +954,7 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 				}
 
 				adj_chan = acs_find_chan(iface, chan->freq +
-							 (j * 20) + 5);
+							 freq_offset + 5);
 				if (adj_chan && acs_usable_chan(adj_chan)) {
 					factor += ACS_ADJ_WEIGHT *
 						adj_chan->interference_factor;
@@ -956,7 +962,7 @@ acs_find_ideal_chan_mode(struct hostapd_iface *iface,
 				}
 
 				adj_chan = acs_find_chan(iface, chan->freq +
-							 (j * 20) + 10);
+							 freq_offset + 10);
 				if (adj_chan && acs_usable_chan(adj_chan)) {
 					factor += ACS_NEXT_ADJ_WEIGHT *
 						adj_chan->interference_factor;
@@ -1039,14 +1045,6 @@ acs_find_ideal_chan(struct hostapd_iface *iface)
 		bw = op_class_to_bandwidth(iface->conf->op_class);
 		n_chans = bw / 20;
 		goto bw_selected;
-	}
-
-	/* TODO: HT40- support */
-
-	if (iface->conf->ieee80211n &&
-	    iface->conf->secondary_channel == -1) {
-		wpa_printf(MSG_ERROR, "ACS: HT40- is not supported yet. Please try HT40+");
-		return NULL;
 	}
 
 	if (iface->conf->ieee80211n &&
