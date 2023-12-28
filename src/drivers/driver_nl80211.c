@@ -5212,7 +5212,9 @@ static int wpa_driver_nl80211_set_ap(void *priv,
 
 		flags |= NL80211_AP_SETTINGS_SA_QUERY_OFFLOAD_SUPPORT;
 
-		if (nla_put_u32(msg, NL80211_ATTR_AP_SETTINGS_FLAGS, flags))
+		if (nl80211_attr_supported(drv,
+					   NL80211_ATTR_AP_SETTINGS_FLAGS) &&
+		    nla_put_u32(msg, NL80211_ATTR_AP_SETTINGS_FLAGS, flags))
 			goto fail;
 	}
 
@@ -5346,7 +5348,8 @@ static int wpa_driver_nl80211_set_ap(void *priv,
 		nla_nest_end(msg, spr);
 	}
 
-	if (params->freq && params->freq->he_enabled) {
+	if (params->freq && params->freq->he_enabled &&
+	    nl80211_attr_supported(drv, NL80211_ATTR_HE_BSS_COLOR)) {
 		struct nlattr *bss_color;
 
 		bss_color = nla_nest_start(msg, NL80211_ATTR_HE_BSS_COLOR);
