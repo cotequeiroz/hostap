@@ -4544,6 +4544,7 @@ static void hostapd_ctrl_iface_flush(struct hapd_interfaces *interfaces)
 #ifdef CONFIG_DPP
 	dpp_global_clear(interfaces->dpp);
 #ifdef CONFIG_DPP3
+	interfaces->dpp_pb_bi = NULL;
 	{
 		int i;
 
