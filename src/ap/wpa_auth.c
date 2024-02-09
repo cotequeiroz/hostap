@@ -5586,6 +5586,7 @@ static const char * wpa_bool_txt(int val)
 	return val ? "TRUE" : "FALSE";
 }
 
+#ifdef CONFIG_CTRL_IFACE_MIB
 
 #define RSN_SUITE "%02x-%02x-%02x-%d"
 #define RSN_SUITE_ARG(s) \
@@ -5738,7 +5739,7 @@ int wpa_get_mib_sta(struct wpa_state_machine *sm, char *buf, size_t buflen)
 
 	return len;
 }
-
+#endif
 
 void wpa_auth_countermeasures_start(struct wpa_authenticator *wpa_auth)
 {
