@@ -1567,6 +1567,7 @@ int hostapd_setup_bss(struct hostapd_data *hapd, int first, bool start_beacon)
 		wpa_printf(MSG_ERROR, "GAS server initialization failed");
 		return -1;
 	}
+#endif /* CONFIG_INTERWORKING */
 
 	if (conf->qos_map_set_len &&
 	    hostapd_drv_set_qos_map(hapd, conf->qos_map_set,
@@ -1574,7 +1575,6 @@ int hostapd_setup_bss(struct hostapd_data *hapd, int first, bool start_beacon)
 		wpa_printf(MSG_ERROR, "Failed to initialize QoS Map");
 		return -1;
 	}
-#endif /* CONFIG_INTERWORKING */
 
 	if (conf->bss_load_update_period && bss_load_update_init(hapd)) {
 		wpa_printf(MSG_ERROR, "BSS Load initialization failed");
