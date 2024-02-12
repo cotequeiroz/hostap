@@ -10,7 +10,6 @@
 #define CONFIG_SSID_H
 
 #include "common/defs.h"
-#include "ap/sta_info.h"
 #include "utils/list.h"
 #include "eap_peer/eap_config.h"
 #include "drivers/nl80211_copy.h"
